@@ -1,16 +1,65 @@
-# React + Vite
+# Практика 8 — Первый проект на React: каталог товаров
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+SDT1072 · 2026
 
-Currently, two official plugins are available:
+## Запуск
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+```bash
+cd shop
+npm install
+npm run dev
+```
 
-## React Compiler
+Нужен Node 18 или новее (`node -v`).
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Структура
 
-## Expanding the Oxlint configuration
+```
+shop/src
+├── main.jsx         — точка входа
+├── App.jsx          — массив products (5 товаров) и сборка страницы
+├── Header.jsx       — заголовок магазина (h1)
+├── ProductList.jsx  — получает products через props, выводит через map, считает «в наличии»
+└── ProductCard.jsx  — карточка: название, цена с валютой, наличие
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+## Что сделано
+
+- **Задание 1** — проект создан через Vite, `App.jsx` очищен, `Header` подключён через `import` и вставлен как `<Header />`.
+- **Задание 2** — `ProductCard` показывает название, цену (`{props.price} тг`) и наличие; при отсутствии — «Нет в наличии». Числа и булевы значения передаются в фигурных скобках.
+- **Задание 3** — массив `products` из пяти объектов (`id`, `title`, `price`, `inStock`) выводится через `map`, у каждой карточки `key={product.id}`. Каталог вынесен в `ProductList`, который получает массив через props. Со звёздочкой: счётчик «В наличии: N из M» через `filter(...).length`.
+
+## Разминка: пять ошибок
+
+Исходный код:
+
+```jsx
+function card(props) {
+    return
+    <div class="card">
+        <h2>{props.title}<h2>
+        <p>Цена: props.price</p>
+    </div>
+}
+```
+
+1. `card` → `Card`: имя компонента должно начинаться с заглавной буквы, иначе React считает его HTML-тегом.
+2. `return` стоит на отдельной строке: JavaScript сам ставит `;` после `return`, функция возвращает `undefined`. Нужно `return (` и разметка внутри скобок.
+3. `class` → `className`: `class` — зарезервированное слово JS.
+4. `<h2>` не закрыт: вторым должен быть `</h2>`.
+5. `props.price` без фигурных скобок: нужно `{props.price}`.
+
+**Какая пройдёт молча?** Пятая: React не выдаёт ошибку, текст просто выводится как «Цена: props.price». Самая «злая» — вторая: экран пустой, ошибок нет.
+
+Исправленный вариант:
+
+```jsx
+function Card(props) {
+  return (
+    <div className="card">
+      <h2>{props.title}</h2>
+      <p>Цена: {props.price}</p>
+    </div>
+  )
+}
+```
